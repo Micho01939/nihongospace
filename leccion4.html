@@ -251,7 +251,7 @@
         <!-- 5. ESCRITURA EN VIVO (CANVAS) -->
         <section class="contenedor-pizarra">
             <h2>🖌️ ¡Pruébalo tú mismo!</h2>
-            <p>Dibuja el carácter de <strong>い</strong> en el cuadro usando tu dedo o ratón siguiendo los 2 trazos:</p>
+            <p>Dibuja el carácter de <strong>い</strong> in el cuadro usando tu dedo o ratón siguiendo los 2 trazos:</p>
             <canvas id="pizarra" width="280" height="250"></canvas>
             <br>
             <button type="button" class="btn-limpiar" id="btn-limpiar-pizarra">Borrar Lienzo 🧼</button>
@@ -291,10 +291,16 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Función global de reproducción
+        // FUNCIÓN DE REPRODUCCIÓN ACTUALIZADA CON LA RUTA DE LA CARPETA 'audios/'
         window.reproducirAudio = function(nombreArchivo) {
-            const audio = new Audio(nombreArchivo);
-            audio.play().catch(error => console.log("Error al reproducir audio:", error));
+            const rutaCompleta = 'audios/' + nombreArchivo;
+            console.log("Intentando reproducir audio desde:", rutaCompleta);
+            
+            const audio = new Audio(rutaCompleta);
+            audio.play().catch(error => {
+                console.log("Error al reproducir audio:", error);
+                console.log("Asegúrate de que el archivo exista en la carpeta audios con el nombre exacto.");
+            });
         };
 
         // Verificador de botones interactivos
@@ -396,4 +402,3 @@
     </script>
 </body>
 </html>
-
