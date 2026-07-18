@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Lección 2: Aprende sobre las primeras hiraganas - NihongoSpace">
+    <meta name="description" content="Lección 2: ¿Qué es el Hiragana? - NihongoSpace">
     <title>Lección 2 - NihongoSpace</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -17,17 +17,226 @@
         </div>
     </header>
 
-    <main>
-        <section class="contenido">
+    <main id="leccion">
+
+        <!-- PANTALLA 1: CONTENIDO DE LA LECCIÓN (Secciones 1, 2 y 3) -->
+        <section class="contenido leccion-pantalla activa" data-pantalla="0">
             <p class="panel-eyebrow">Lección 2</p>
-            <h1>Aprende sobre las primeras hiraganas</h1>
-            <p class="texto-intro">Esta lección está en construcción. ¡Vuelve pronto!</p>
+            <h1>🎌 Lección 2: ¿Qué es el Hiragana? (ひらがな)</h1>
+            <p class="texto-intro">El Hiragana es la piedra angular del idioma japonés. Es el primer sistema de escritura que todo estudiante debe aprender y el alfabeto básico con el que desbloquearás el resto del idioma. Si el japonés fuera una casa, el Hiragana sería los cimientos.</p>
+
+            <!-- Sección 2 -->
+            <div class="tarjeta" style="margin-bottom: 25px;">
+                <h3>🛠️ ¿Para qué se usa en el Japonés Real?</h3>
+                <p>En una página web o un texto japonés real, verás el Hiragana mezclado con otros sistemas. Se utiliza específicamente para:</p>
+                <ul class="lista-lección">
+                    <li><strong>Palabras nativas:</strong> Vocabulario propio de Japón que no usa caracteres chinos (ej. Sakura / Cerezo 🌸 -> さくら).</li>
+                    <li><strong>Gramática y conectores:</strong> Unir las palabras en una frase (partículas) y conjugar los verbos.</li>
+                    <li><strong>Furigana (Guías de lectura):</strong> Pequeños caracteres de Hiragana que se colocan encima de los Kanjis complejos para enseñarle al usuario cómo se pronuncian.</li>
+                </ul>
+            </div>
+
+            <!-- Sección 3 -->
+            <div class="tarjeta">
+                <h3>Conociendo la vocal "A" (あ)</h3>
+                <p>La <strong>あ (A)</strong> es el primer carácter del Hiragana. Es el origen de todo el silabario y la base para el resto de los sonidos.</p>
+                <p style="margin-top: 10px;"><strong>🔊 Pronunciación:</strong> Sonido: Se pronuncia exactamente igual que la "A" en español (como en "casa" o "árbol").</p>
+                
+                <!-- Reproductor de Audio e Interfaz -->
+                <audio id="audio-a" src="audios/あ.mp3"></audio>
+                <button type="button" id="btn-audio-a" class="btn-primario" style="background-color: #6c5ce7; color: #ffffff; border: none; margin-top: 15px; cursor: pointer;">
+                    🔊 ve como se dice a en japonés aprende como se dice
+                </button>
+            </div>
+
+            <button type="button" class="btn-primario btn-siguiente-pantalla" data-siguiente="1" style="margin-top: 30px; border: none; cursor: pointer; background-color: #6c5ce7; color: white;">Continuar</button>
         </section>
+
+        <!-- PANTALLA 2: SECCIÓN CUATRO (Transición a la trivia) -->
+        <section class="contenido leccion-pantalla" data-pantalla="1">
+            <p class="panel-eyebrow">Preparación</p>
+            <div class="tarjeta" style="text-align: center; padding: 40px 20px;">
+                <span style="font-size: 3rem; display: block; margin-bottom: 15px;">📝</span>
+                <p class="texto-intro" style="font-size: 1.1rem; color: #2d3436;">Ahora sabes sobre la letra あ, prepárate para la siguiente lección vamos a ver si aprendiste y después se dará en continuar.</p>
+            </div>
+            <button type="button" class="btn-primario btn-siguiente-pantalla" data-siguiente="2" style="margin-top: 25px; border: none; cursor: pointer; background-color: #6c5ce7; color: white;">Comenzar Trivia</button>
+        </section>
+
+        <!-- PANTALLA 3: PREGUNTA 1 -->
+        <section class="contenido leccion-pantalla" data-pantalla="2">
+            <p class="panel-eyebrow">Pregunta 1 de 2</p>
+            <h2 class="pregunta-titulo">Si el japonés fuera una casa, ¿qué parte sería el Hiragana?</h2>
+            <div class="opciones-quiz" data-pregunta="0">
+                <button type="button" class="opcion-quiz" data-correcta="true">Los cimientos</button>
+                <button type="button" class="opcion-quiz">El tejado</button>
+                <button type="button" class="opcion-quiz">Las ventanas</button>
+            </div>
+            <button type="button" class="btn-primario btn-siguiente-pantalla oculto" data-siguiente="3" style="border: none; cursor: pointer; background-color: #6c5ce7; color: white;">Continuar</button>
+        </section>
+
+        <!-- PANTALLA 4: PREGUNTA 2 -->
+        <section class="contenido leccion-pantalla" data-pantalla="3">
+            <p class="panel-eyebrow">Pregunta 2 de 2</p>
+            <h2 class="pregunta-titulo">¿Cómo se pronuncia el carácter あ en japonés?</h2>
+            <div class="opciones-quiz" data-pregunta="1">
+                <button type="button" class="opcion-quiz">Como una "O"</button>
+                <button type="button" class="opcion-quiz" data-correcta="true">Exactamente igual que la "A" en español</button>
+                <button type="button" class="opcion-quiz">Como una "E" muda</button>
+            </div>
+            <button type="button" class="btn-primario btn-siguiente-pantalla oculto" data-siguiente="4" style="border: none; cursor: pointer; background-color: #6c5ce7; color: white;">Ver resultados</button>
+        </section>
+
+        <!-- PANTALLA 5: RESULTADOS Y ASIGNACIÓN DE PROGRESO -->
+        <section class="contenido leccion-pantalla" data-pantalla="4">
+            <div class="resultado-caja">
+                <p class="resultado-emoji" id="resultado-emoji">🎉</p>
+                <h2 class="resultado-mensaje" id="resultado-mensaje">¡Excelente trabajo!</h2>
+
+                <div class="resultado-stats">
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-xp">0</span>
+                        <span class="etiqueta">XP ganado</span>
+                    </div>
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-buenas">0</span>
+                        <span class="etiqueta">Buenas</span>
+                    </div>
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-malas">0</span>
+                        <span class="etiqueta">Malas</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-primario" id="boton-siguiente-leccion" style="border: none; cursor: pointer; background-color: #6c5ce7; color: white;">Continuar</button>
+            </div>
+        </section>
+
     </main>
 
     <footer>
         <p>&copy; 2026 Creado con ❤️ por NihongoSpace</p>
     </footer>
 
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const XP_POR_ACIERTO = 50;
+
+        const pantallas = document.querySelectorAll('.leccion-pantalla');
+        const gruposPreguntas = document.querySelectorAll('.opciones-quiz');
+        const resultados = [];
+        let usuarioActual = null;
+
+        // Configuración del botón de Audio para あ.mp3
+        const btnAudio = document.getElementById('btn-audio-a');
+        const audioA = document.getElementById('audio-a');
+        if (btnAudio && audioA) {
+            btnAudio.addEventListener('click', function () {
+                audioA.play().catch(function (error) {
+                    console.log("Interacción requerida para reproducir audio:", error);
+                });
+            });
+        }
+
+        function mostrarPantalla(indice) {
+            pantallas.forEach(function (pantalla) {
+                const esActual = parseInt(pantalla.dataset.pantalla, 10) === indice;
+                pantalla.classList.toggle('activa', esActual);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.btn-siguiente-pantalla').forEach(function (boton) {
+            boton.addEventListener('click', async function () {
+                const siguiente = parseInt(boton.dataset.siguiente, 10);
+                if (siguiente === 4) {
+                    await calcularYGuardarResultados();
+                }
+                mostrarPantalla(siguiente);
+            });
+        });
+
+        gruposPreguntas.forEach(function (grupo) {
+            const numeroPregunta = parseInt(grupo.dataset.pregunta, 10);
+            const opciones = grupo.querySelectorAll('.opcion-quiz');
+            const botonContinuar = grupo.parentElement.querySelector('.btn-siguiente-pantalla');
+
+            opciones.forEach(function (opcion) {
+                opcion.addEventListener('click', function () {
+                    if (grupo.dataset.respondida === 'true') return;
+                    grupo.dataset.respondida = 'true';
+
+                    const esCorrecta = opcion.dataset.correcta === 'true';
+                    resultados[numeroPregunta] = esCorrecta;
+
+                    opciones.forEach(function (o) {
+                        o.disabled = true;
+                        if (o.dataset.correcta === 'true') {
+                            o.classList.add('correcta');
+                        } else if (o === opcion) {
+                            o.classList.add('incorrecta');
+                        }
+                    });
+
+                    botonContinuar.classList.remove('oculto');
+                });
+            });
+        });
+
+        async function calcularYGuardarResultados() {
+            const buenas = resultados.filter(function (r) { return r === true; }).length;
+            const malas = resultados.filter(function (r) { return r === false; }).length;
+            const xpGanado = buenas * XP_POR_ACIERTO;
+
+            document.getElementById('stat-xp').textContent = xpGanado;
+            document.getElementById('stat-buenas').textContent = buenas;
+            document.getElementById('stat-malas').textContent = malas;
+
+            const mensajeEl = document.getElementById('resultado-mensaje');
+            const emojiEl = document.getElementById('resultado-emoji');
+
+            if (buenas === resultados.length) {
+                emojiEl.textContent = '🎉';
+                mensajeEl.textContent = '¡Excelente trabajo!';
+            } else if (buenas >= 1) {
+                emojiEl.textContent = '👏';
+                mensajeEl.textContent = '¡Buen trabajo!';
+            } else {
+                emojiEl.textContent = '💪';
+                mensajeEl.textContent = 'Puedes mejorar';
+            }
+
+            if (!usuarioActual) return;
+
+            const perfilRef = doc(db, 'perfiles', usuarioActual.uid);
+            const perfilSnap = await getDoc(perfilRef);
+            const datosActuales = perfilSnap.exists() ? perfilSnap.data() : {};
+
+            const xpActual = datosActuales.xp || 0;
+            const progresoActual = datosActuales.progreso || 1;
+
+            // Al terminar la Lección 2, el progreso sube oficialmente a 3
+            await setDoc(perfilRef, {
+                xp: xpActual + xpGanado,
+                progreso: Math.max(progresoActual, 3)
+            }, { merge: true });
+        }
+
+        document.getElementById('boton-siguiente-leccion').addEventListener('click', function () {
+            window.location.href = 'panel.html';
+        });
+
+        onAuthStateChanged(auth, function (usuario) {
+            if (!usuario) {
+                window.location.href = 'login.html';
+                return;
+            }
+            usuarioActual = usuario;
+        });
+    </script>
+
 </body>
-</html>
+    </html>
+    
