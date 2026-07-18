@@ -7,6 +7,76 @@
     <title>Tu Panel - NihongoSpace</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos especiales para la sección del Libro de Repaso */
+        .seccion-repaso {
+            margin-top: 40px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .btn-libro {
+            background: none;
+            border: none;
+            font-size: 3rem;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        .btn-libro:hover {
+            transform: scale(1.15) rotate(-5deg);
+        }
+        .repaso-titulo {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-top: 10px;
+        }
+        .repaso-subtitulo {
+            font-size: 0.9rem;
+            color: #636e72;
+            margin-bottom: 15px;
+        }
+        .bloque-repaso-contenido {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            text-align: left;
+            background: #f9f8ff;
+            border-radius: 12px;
+            padding: 0 15px;
+        }
+        .bloque-repaso-contenido.abierto {
+            max-height: 500px; /* Espacio suficiente para los textos */
+            opacity: 1;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #e1dbff;
+        }
+        .tarjeta-memoria {
+            margin-bottom: 15px;
+            border-left: 4px solid #6c5ce7;
+            padding-left: 10px;
+        }
+        .tarjeta-memoria:last-child {
+            margin-bottom: 0;
+        }
+        .tarjeta-memoria h4 {
+            margin: 0 0 5px 0;
+            color: #6c5ce7;
+            font-size: 0.95rem;
+        }
+        .tarjeta-memoria p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #2d3436;
+            line-height: 1.4;
+        }
+    </style>
 </head>
 <body>
 
@@ -47,6 +117,18 @@
             </a>
             <h1 class="leccion-titulo" id="leccion-titulo">Lección 1</h1>
             <p class="leccion-subtitulo" id="leccion-subtitulo">Conoce el Japonés</p>
+
+            <!-- NUEVA PARTE: NUEVO ICONO DE LIBRO INTELIGENTE DE REPASO -->
+            <div class="seccion-repaso">
+                <button type="button" class="btn-libro" id="btn-libro-repaso" aria-label="Abrir bitácora de lo aprendido">📖</button>
+                <h2 class="repaso-titulo">¿Qué es lo que has aprendido?</h2>
+                <p class="repaso-subtitulo">¿Se te olvidó lo que hiciste? ¡Echa un vistazo!</p>
+                
+                <!-- El contenedor donde se inyectarán los resúmenes -->
+                <div class="bloque-repaso-contenido" id="contenedor-repaso">
+                    <!-- JavaScript llenará esto según las lecciones completadas -->
+                </div>
+            </div>
         </section>
     </main>
 
@@ -59,7 +141,6 @@
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // LISTA DE LECCIONES ACTUALIZADA Y CORREGIDA SIN COMILLAS EXTRAS ✓
         const LECCIONES = [
             { numero: 1, titulo: 'Lección 1', subtitulo: 'Conoce el Japonés', href: 'leccion1.html' },
             { numero: 2, titulo: 'Lección 2', subtitulo: 'Aprende sobre las primeras hiraganas', href: 'leccion2.html' },
@@ -146,7 +227,51 @@
             document.getElementById('leccion-titulo').textContent = leccion.titulo;
             document.getElementById('leccion-subtitulo').textContent = leccion.subtitulo;
             document.getElementById('leccion-nodo').setAttribute('href', leccion.href);
+
+            // Generar el contenido del libro de repaso de forma dinámica
+            generarContenidoRepaso(progreso);
         }
+
+        // FUNCIÓN PARA GENERAR EL RESUMEN AUTOMÁTICO SEGÚN LO QUE YA APRENDIÓ
+        function generarContenidoRepaso(progreso) {
+            const contenedor = document.getElementById('contenedor-repaso');
+            let htmlRepaso = '';
+
+            // Si el progreso es 1, significa que no ha completado nada aún
+            if (progreso <= 1) {
+                htmlRepaso = '<p style="text-align:center; color:#b2bec3; font-size:0.85rem; margin:0;">¡Aún estás comenzando tu viaje! Completa tu primera lección para desbloquear tus apuntes. 💪</p>';
+            }
+
+            // Si ya pasó la Lección 1 (Progreso >= 2), desbloquea el apunte de la L1
+            if (progreso >= 2) {
+                htmlRepaso += `
+                    <div class="tarjeta-memoria">
+                        <h4>💡 Lección 1: Conoce el Japonés</h4>
+                        <p>Aprendiste las bases generales del idioma, la importancia del respeto en la cultura de Japón y cómo se estructura el mapa inicial de tu aprendizaje.</p>
+                    </div>
+                `;
+            }
+
+            // Si ya pasó la Lección 2 (Progreso >= 3), añade el apunte de la L2
+            if (progreso >= 3) {
+                htmlRepaso += `
+                    <div class="tarjeta-memoria" style="margin-top: 10px;">
+                        <h4>🎌 Lección 2: ¿Qué es el Hiragana?</h4>
+                        <p>Descubriste que el Hiragana es el cimiento del idioma, usado para palabras nativas, partículas gramaticales y Furigana. ¡Y ya dominas la pronunciación y escritura de la vocal <strong>あ (A)</strong>!</p>
+                    </div>
+                `;
+            }
+
+            contenedor.innerHTML = htmlRepaso;
+        }
+
+        // LÓGICA DE CLIC EN EL LIBRO PARA DESPLEGAR CON ANIMACIÓN
+        const btnLibro = document.getElementById('btn-libro-repaso');
+        const contenedorRepaso = document.getElementById('contenedor-repaso');
+
+        btnLibro.addEventListener('click', function() {
+            contenedorRepaso.classList.toggle('abierto');
+        });
 
         document.getElementById('boton-cerrar-sesion').addEventListener('click', async function () {
             await signOut(auth);
