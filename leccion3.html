@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lección 3: あ de araña - NihongoSpace">
+    <title>Lección 3 - NihongoSpace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para las dinámicas interactivas de la Lección 3 */
+        .grid-vocabulario {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .tarjeta-vocab {
+            background: #ffffff;
+            border: 2px solid #e1dbff;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tarjeta-vocab:hover {
+            transform: translateY(-3px);
+            border-color: #6c5ce7;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.15);
+        }
+        .tarjeta-vocab .jp {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #6c5ce7;
+            display: block;
+        }
+        .tarjeta-vocab .esp {
+            font-size: 0.85rem;
+            color: #636e72;
+            margin-top: 5px;
+            display: block;
+        }
+        .categoria-bloque {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .categoria-titulo {
+            font-size: 1.1rem;
+            color: #2d3436;
+            border-bottom: 2px solid #f1f0ff;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .frase-fila {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px id #f9f9f9;
+        }
+        .frase-fila:last-child {
+            border-bottom: none;
+        }
+        .frase-texto {
+            font-size: 1.1rem;
+            color: #2d3436;
+            flex-grow: 1;
+        }
+        .frase-significado {
+            font-size: 0.85rem;
+            color: #b2bec3;
+            display: block;
+            margin-top: 20px;
+        }
+        .hueco-a {
+            display: inline-block;
+            background: #e1dbff;
+            color: #6c5ce7;
+            border: 2px dashed #6c5ce7;
+            padding: 0 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 30px;
+            text-align: center;
+            transition: all 0.2s ease;
+            margin-right: 3px;
+        }
+        .hueco-a.completado {
+            background: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+            border-style: solid;
+        }
+        .btn-audio-frase {
+            background: #f1f0ff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 10px;
+        }
+        .btn-audio-frase:hover {
+            background: #e1dbff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="panel.html" class="logo">NihongoSpace 🌸</a>
+            <a href="panel.html" class="salir-leccion">Salir</a>
+        </div>
+    </header>
+
+    <!-- BANCO DE AUDIOS CON RUTA EXACTA DE TUS CAPTURAS -->
+    <audio id="aud-ai" src="audios/あい.mp3"></audio>
+    <audio id="aud-abocado" src="audios/あぼかど.mp3"></audio>
+    <audio id="aud-atsui" src="audios/あつい.mp3"></audio>
+    <audio id="aud-aka" src="audios/あか.mp3"></audio>
+    <audio id="aud-arigatou" src="audios/ありがとう.mp3"></audio>
+    
+    <!-- Audios con espacios exactos del gestor de archivos -->
+    <audio id="aud-arigatou-f" src="audios/ありがとう.mp3"></audio>
+    <audio id="aud-ashita" src="audios/あした、ね。 .mp3"></audio>
+    <audio id="aud-anou" src="audios/あのう....mp3"></audio>
+    <audio id="aud-atsuine" src="audios/あつい です ね。 .mp3"></audio>
+    <audio id="aud-amedesu" src="audios/あめ です。 .mp3"></audio>
+    <audio id="aud-atama" src="audios/あたま が いたい です。 .mp3"></audio>
+    <audio id="aud-anatawa" src="audios/あなた は？ .mp3"></audio>
+    <audio id="aud-arewa" src="audios/あれは なん です か？ .mp3"></audio>
+    <audio id="aud-akakuda" src="audios/あかを ください。 .mp3"></audio>
+
+    <main id="leccion">
+
+        <!-- PANTALLA 1: INICIO DE LA LECCIÓN -->
+        <section class="contenido leccion-pantalla activa" data-pantalla="0">
+            <p class="panel-eyebrow">Lección 3: あ de araña</p>
+            <h1>Aprende a usar a en japonés 🎌</h1>
+            <p class="texto-intro">Ya conoces la forma del carácter <strong>あ</strong>. Ahora, es momento de descubrir cómo se combina para dar vida a palabras reales y expresiones que los japoneses usan todos los días en las calles de Tokio.</p>
+            
+            <div class="tarjeta" style="text-align: center; padding: 30px;">
+                <span style="font-size: 4rem; display:block; margin-bottom:10px;">🕷️</span>
+                <p>¡Prepárate para entrenar tu oído y tus habilidades de escritura!</p>
+            </div>
+
+            <button type="button" class="btn-primario btn-siguiente-pantalla" data-siguiente="1" style="margin-top: 30px; border: none; cursor: pointer; background-color: #6c5ce7; color: white;">Empezar Lección</button>
+        </section>
+
+        <!-- PANTALLA 2: SECCIÓN DE ESCUCHAR Y ENLAZAR (VOCABULARIO) -->
+        <section class="contenido leccion-pantalla" data-pantalla="1">
+            <p class="panel-eyebrow">Sección de Vocabulario</p>
+            <h2>Escucha y conecta 🎧</h2>
+            <p class="texto-intro">Toca cada tarjeta para reproducir su pronunciación real de Google y memorizar su significado en español:</p>
+
+            <div class="grid-vocabulario">
+                <div class="tarjeta-vocab" onclick="document.getElementById('aud-ai').play()">
+                    <span class="jp">あい</span>
+                    <span class="esp">Ai (Amor)</span>
+                </div>
+                <div class="tarjeta-vocab" onclick="document.getElementById('aud-abocado').play()">
+                    <span class="jp">あぼかど</span>
+                    <span class="esp">Abocado (Aguacate 🥑)</span>
+                </div>
+                <div class="tarjeta-vocab" onclick="document.getElementById('aud-atsui').play()">
+                    <span class="jp">あつい</span>
+                    <span class="esp">Atsui (Caliente 🥵)</span>
+                </div>
+                <div class="tarjeta-vocab" onclick="document.getElementById('aud-aka').play()">
+                    <span class="jp">あか</span>
+                    <span class="esp">Aka (Rojo 🔴)</span>
+                </div>
+                <div class="tarjeta-vocab" onclick="document.getElementById('aud-arigatou').play()">
+                    <span class="jp">ありがとう</span>
+                    <span class="esp">Arigatou (Gracias 🙏)</span>
+                </div>
+            </div>
+
+            <button type="button" class="btn-primario btn-siguiente-pantalla" data-siguiente="2" style="margin-top: 40px; border: none; cursor: pointer; background-color: #6c5ce7; color: white;">¡Ya los escuché todos!</button>
+        </section>
+
+        <!-- PANTALLA 3: JUEGO INTERACTIVO PONER LA "A" -->
+        <section class="contenido leccion-pantalla" data-pantalla="2">
+            <p class="panel-eyebrow">Práctica de Escritura</p>
+            <h2>Coloca la あ donde corresponda 📝</h2>
+            <p class="texto-intro" style="margin-bottom: 25px;">Toca los cuadros con el signo <strong style="color:#6c5ce7;">[ ? ]</strong> para rellenar la frase con la letra <strong>あ</strong> correcta y escuchar la oración completa:</p>
+
+            <!-- Categoria 1 -->
+            <div class="categoria-bloque">
+                <div class="categoria-titulo">👋 Saludos y expresiones básicas</div>
+                
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-arigatou-f">?</span>りがとう。
+                        <span class="frase-significado">Arigatou. (Gracias.)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-arigatou-f').play()">🔊</button>
+                </div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-ashita">?</span>した、ね Enlace.
+                        <span class="frase-significado">Ashita, ne. (Hasta mañana.)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-ashita').play()">🔊</button>
+                </div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-anou">?</span>のう…
+                        <span class="frase-significado">Anou... (Disculpe... para dudar o llamar atención.)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-anou').play()">🔊</button>
+                </div>
+            </div>
+
+            <!-- Categoria 2 -->
+            <div class="categoria-bloque">
+                <div class="categoria-titulo">🌧️ Frases sobre el clima y estados</div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-atsuine">?</span>つい です ね。
+                        <span class="frase-significado">Atsui desu ne. (Hace calor, ¿verdad?)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-atsuine').play()">🔊</button>
+                </div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-amedesu">?</span>め です。
+                        <span class="frase-significado">Ame desu. (Está lloviendo.)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-amedesu').play()">🔊</button>
+                </div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-atama">?</span>たま が いたい です。
+                        <span class="frase-significado">Atama ga itai desu. (Me duele la cabeza.)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-atama').play()">🔊</button>
+                </div>
+            </div>
+
+            <!-- Categoria 3 -->
+            <div class="categoria-bloque">
+                <div class="categoria-titulo">👤 Frases de interacción y objetos</div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-anatawa">?</span>なた は？
+                        <span class="frase-significado">Anata wa? (¿Y tú?)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-anatawa').play()">🔊</button>
+                </div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-arewa">?</span>れ は なん です か？
+                        <span class="frase-significado">Are wa nan desu ka? (¿Qué es aquello de allá?)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-arewa').play()">🔊</button>
+                </div>
+
+                <div class="frase-fila">
+                    <div class="frase-texto">
+                        <span class="hueco-a" data-audio="aud-akakuda">?</span>か を ください。
+                        <span class="frase-significado">Aka o kudasai. (El rojo, por favor.)</span>
+                    </div>
+                    <button type="button" class="btn-audio-frase" onclick="document.getElementById('aud-akakuda').play()">🔊</button>
+                </div>
+            </div>
+
+            <button type="button" id="btn-verificar-frases" class="btn-primario oculto" style="border: none; cursor: pointer; background-color: #6c5ce7; color: white; margin-top: 20px;">Terminar Lección</button>
+        </section>
+
+        <!-- PANTALLA 4: RESULTADOS Y RECOMPENSAS -->
+        <section class="contenido leccion-pantalla" data-pantalla="3">
+            <div class="resultado-caja">
+                <p class="resultado-emoji">🏆</p>
+                <h2 class="resultado-mensaje">¡Excelente avance, maestro del Hiragana!</h2>
+
+                <div class="resultado-stats">
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-xp">150</span>
+                        <span class="etiqueta">XP ganado</span>
+                    </div>
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-aciertos">9</span>
+                        <span class="etiqueta">Frases armadas</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-primario" id="btn-finalizar-todo" style="border: none; cursor: pointer; background-color: #6c5ce7; color: white;">Volver al panel</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Creado con ❤️ por NihongoSpace</p>
+    </footer>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const pantallas = document.querySelectorAll('.leccion-pantalla');
+        const huecos = document.querySelectorAll('.hueco-a');
+        const btnVerificar = document.getElementById('btn-verificar-frases');
+        let usuarioActual = null;
+        let huecosCompletados = 0;
+
+        function mostrarPantalla(indice) {
+            pantallas.forEach(function (pantalla) {
+                const esActual = parseInt(pantalla.dataset.pantalla, 10) === indice;
+                pantalla.classList.toggle('activa', esActual);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.btn-siguiente-pantalla').forEach(function (boton) {
+            boton.addEventListener('click', function () {
+                const siguiente = parseInt(boton.dataset.siguiente, 10);
+                mostrarPantalla(siguiente);
+            });
+        });
+
+        // MECÁNICA JUEGO: PONER LA "あ"
+        huecos.forEach(function (hueco) {
+            hueco.addEventListener('click', function () {
+                if (hueco.classList.contains('completado')) return;
+
+                hueco.textContent = 'あ';
+                hueco.classList.add('completado');
+                huecosCompletados++;
+
+                // Reproducir el audio asignado de inmediato
+                const audioId = hueco.dataset.audio;
+                const audioObj = document.getElementById(audioId);
+                if (audioObj) {
+                    audioObj.play().catch(e => console.log("Audio listo"));
+                }
+
+                // Mostrar botón de finalizar cuando ponga las 9 letras "あ"
+                if (huecosCompletados === huecos.length) {
+                    btnVerificar.classList.remove('oculto');
+                }
+            });
+        });
+
+        btnVerificar.addEventListener('click', async function () {
+            if (usuarioActual) {
+                const perfilRef = doc(db, 'perfiles', usuarioActual.uid);
+                const perfilSnap = await getDoc(perfilRef);
+                const datosActuales = perfilSnap.exists() ? perfilSnap.data() : {};
+
+                const xpActual = datosActuales.xp || 0;
+                const progresoActual = datosActuales.progreso || 1;
+
+                // Al completar la lección 3, el progreso escala oficialmente a 4
+                await setDoc(perfilRef, {
+                    xp: xpActual + 150,
+                    progreso: Math.max(progresoActual, 4)
+                }, { merge: true });
+            }
+            mostrarPantalla(3);
+        });
+
+        document.getElementById('btn-finalizar-todo').addEventListener('click', function () {
+            window.location.href = 'panel.html';
+        });
+
+        onAuthStateChanged(auth, function (usuario) {
+            if (!usuario) {
+                window.location.href = 'login.html';
+                return;
+            }
+            usuarioActual = usuario;
+        });
+    </script>
+
+</body>
+</html>
