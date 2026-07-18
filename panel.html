@@ -128,7 +128,7 @@
             font-style: italic;
         }
 
-        /* NUEVOS ESTILOS: Asegurar alineación y el Widget de Racha */
+        /* Widget de Racha */
         .perfil-usuario {
             display: flex;
             align-items: center;
@@ -153,13 +153,12 @@
 </head>
 <body>
 
-    <!-- Barra superior con ícono, racha y datos del usuario -->
     <header>
         <div class="nav-container">
             <a href="index.html" class="logo">NihongoSpace 🌸</a>
             <div class="perfil-usuario">
                 
-                <!-- NUEVO: Widget de Racha (Fueguito) al lado de XP -->
+                <!-- Widget de Racha (Fueguito) -->
                 <div class="racha-widget" id="racha-widget" title="Tu racha de días seguidos de estudio">
                     <span class="racha-icono">🔥</span>
                     <span class="racha-valor" id="racha-usuario">0</span>
@@ -198,18 +197,18 @@
             <h1 class="leccion-titulo" id="leccion-titulo">Lección 1</h1>
             <p class="leccion-subtitulo" id="leccion-subtitulo">Conoce el Japonés</p>
 
-            <!-- SECCIÓN DEL LIBRO INTELIGENTE DE REPASO -->
+            <!-- LIBRO INTELIGENTE DE REPASO -->
             <div class="seccion-repaso">
                 <button type="button" class="btn-libro" id="btn-libro-repaso" aria-label="Abrir bitácora de lo aprendido">📖</button>
                 <h2 class="repaso-titulo">¿Qué es lo que has aprendido?</h2>
                 <p class="repaso-subtitulo">¿Se te olvidó lo que hiciste? ¡Echa un vistazo!</p>
                 
                 <div class="bloque-repaso-contenido" id="contenedor-repaso">
-                    <!-- JavaScript llenará esto según las lecciones completadas -->
+                    <!-- Llenado automático con JS -->
                 </div>
             </div>
 
-            <!-- SECCIÓN DE MENSAJE AL CREADOR VINCULADA A TU CUENTA -->
+            <!-- ENLACE A TIKTOK -->
             <div class="seccion-contacto">
                 <div class="icono-contacto" onclick="window.open('https://www.tiktok.com/@sol_de_luz_l?_r=1&_t=ZS-9880dOrP0WC', '_blank')">💬</div>
                 <p class="contacto-mensaje">¿Quieres mandarle un mensaje al creador? Aquí está el TikTok</p>
@@ -260,24 +259,21 @@
                 elementoAvatar.textContent = nombre.charAt(0).toUpperCase();
             }
 
-            // MODIFICACIÓN: Cálculo matemático sucesivo de Niveles por cada 500 XP
+            // Cálculo sucesivo de niveles fijado correctamente
             const xpTotal = datosPerfilActual.xp || 0;
             const nivelCalculado = Math.floor(xpTotal / XP_POR_NIVEL);
             elementoNivel.textContent = "Nivel " + nivelCalculado;
-
             elementoXP.textContent = xpTotal;
 
-            // LÓGICA DE LA RACHA: Renderizado dinámico del fueguito
+            // Manejo estético de la racha
             const racha = datosPerfilActual.rachaActual || 0;
             elementoRacha.textContent = racha;
 
             if (racha === 0) {
-                // Si la racha está en cero, se muestra gris/apagada amigablemente
                 widgetRacha.style.background = "#f1f2f6";
                 widgetRacha.style.border = "1px solid #ced6e0";
                 widgetRacha.style.color = "#747d8c";
             } else {
-                // Si tiene racha, ¡se enciende el fuego!
                 widgetRacha.style.background = "#fff0f0";
                 widgetRacha.style.border = "1px solid #ffccd5";
                 widgetRacha.style.color = "#d63031";
@@ -286,14 +282,14 @@
 
         function animarBarraXP() {
             const xpTotal = datosPerfilActual.xp || 0;
-            const xpEnNivel = xpTotal % XP_POR_NIVEL; // El residuo de la división nos da la XP del nivel actual
+            const xpEnNivel = xpTotal % XP_POR_NIVEL;
             const porcentaje = Math.min(100, Math.round((xpEnNivel / XP_POR_NIVEL) * 100));
 
             detalleXP.textContent = xpEnNivel + ' / ' + XP_POR_NIVEL + ' XP';
-
             barraRelleno.style.width = '0%';
-            requestAnimationFrame(function () {
-                requestAnimationFrame(function () {
+            
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
                     barraRelleno.style.width = porcentaje + '%';
                 });
             });
@@ -302,17 +298,17 @@
         function alternarPopoverXP() {
             const abierto = popoverXP.classList.toggle('visible');
             botonXP.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-            if (open) {
+            if (abiertos || abierto) { // Corregido el bug de la variable 'open' vieja
                 animarBarraXP();
             }
         }
 
-        botonXP.addEventListener('click', function (evento) {
+        botonXP.addEventListener('click', (evento) => {
             evento.stopPropagation();
             alternarPopoverXP();
         });
 
-        document.addEventListener('click', function (evento) {
+        document.addEventListener('click', (evento) => {
             if (!evento.target.closest('.xp-widget') && popoverXP.classList.contains('visible')) {
                 popoverXP.classList.remove('visible');
                 botonXP.setAttribute('aria-expanded', 'false');
@@ -339,7 +335,6 @@
             if (progreso <= 1) {
                 htmlRepaso = '<p style="text-align:center; color:#b2bec3; font-size:0.85rem; margin:0;">¡Aún estás comenzando tu viaje! Completa tu primera lección para desbloquear tus apuntes. 💪</p>';
             }
-
             if (progreso >= 2) {
                 htmlRepaso += `
                     <div class="tarjeta-memoria">
@@ -348,21 +343,19 @@
                     </div>
                 `;
             }
-
             if (progreso >= 3) {
                 htmlRepaso += `
                     <div class="tarjeta-memoria" style="margin-top: 10px;">
                         <h4>🎌 Lección 2: ¿Qué es el Hiragana?</h4>
-                        <p>Descubriste que el Hiragana es el cimiento del idioma, usado para palabras nativas, partículas gramaticales y Furigana. ¡Y ya dominas la pronunciación y escritura de la vocal <strong>あ (A)</strong>!</p>
+                        <p>Descubriste que el Hiragana es el cimiento del idioma. ¡Y ya dominas la pronunciación y escritura de la vocal あ (A)!</p>
                     </div>
                 `;
             }
-
             if (progreso >= 4) {
                 htmlRepaso += `
                     <div class="tarjeta-memoria" style="margin-top: 10px;">
                         <h4>🕷️ Lección 3: あ de araña</h4>
-                        <p>Dominaste el uso de la letra <strong>あ</strong> en entornos reales. Repasaste vocabulario esencial (Ai, Abocado, Atsui, Aka, Arigatou) y consolidaste estructuras prácticas de interacción, saludos y expresiones sobre el clima.</p>
+                        <p>Dominaste el uso de la letra あ en entornos reales. Repasaste vocabulario esencial (Ai, Abocado, Atsui, Aka, Arigatou).</p>
                     </div>
                 `;
             }
@@ -373,16 +366,16 @@
         const btnLibro = document.getElementById('btn-libro-repaso');
         const contenedorRepaso = document.getElementById('contenedor-repaso');
 
-        btnLibro.addEventListener('click', function() {
+        btnLibro.addEventListener('click', () => {
             contenedorRepaso.classList.toggle('abierto');
         });
 
-        document.getElementById('boton-cerrar-sesion').addEventListener('click', async function () {
+        document.getElementById('boton-cerrar-sesion').addEventListener('click', async () => {
             await signOut(auth);
             window.location.href = 'login.html';
         });
 
-        onAuthStateChanged(auth, async function (usuario) {
+        onAuthStateChanged(auth, async (usuario) => {
             if (!usuario) {
                 window.location.href = 'login.html';
                 return;
@@ -399,7 +392,5 @@
             mostrarLeccionActual();
         });
     </script>
-
 </body>
 </html>
-
