@@ -51,7 +51,7 @@
             padding: 0 15px;
         }
         .bloque-repaso-contenido.abierto {
-            max-height: 650px; /* Incrementado para dar espacio suficiente a la Lección 3 */
+            max-height: 650px; /* Espacio suficiente para los textos */
             opacity: 1;
             padding: 15px;
             margin-top: 15px;
@@ -75,6 +75,58 @@
             font-size: 0.85rem;
             color: #2d3436;
             line-height: 1.4;
+        }
+
+        /* NUEVOS ESTILOS: Sección de mensaje al creador (TikTok) */
+        .seccion-contacto {
+            margin-top: 25px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.06);
+            text-align: center;
+            border: 1px solid #f1f0ff;
+        }
+        .icono-contacto {
+            font-size: 2.5rem;
+            display: inline-block;
+            margin-bottom: 5px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .icono-contacto:hover {
+            transform: scale(1.1) rotate(8deg);
+        }
+        .contacto-mensaje {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin: 5px 0 12px 0;
+        }
+        .btn-tiktok {
+            display: inline-block;
+            background: #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+        .btn-tiktok:hover {
+            background: #25d366; /* Un color vivo alternativo o efecto hover */
+            background: linear-gradient(45deg, #ff0050, #00f2fe);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 0, 80, 0.3);
+        }
+        .contacto-nota-fb {
+            font-size: 0.8rem;
+            color: #b2bec3;
+            margin-top: 10px;
+            margin-bottom: 0;
+            font-style: italic;
         }
     </style>
 </head>
@@ -129,6 +181,15 @@
                     <!-- JavaScript llenará esto según las lecciones completadas -->
                 </div>
             </div>
+
+            <!-- NUEVA PARTE: SECCIÓN DE MENSAJE AL CREADOR -->
+            <div class="seccion-contacto">
+                <div class="icono-contacto" onclick="window.open('https://www.tiktok.com', '_blank')">💬</div>
+                <p class="contacto-mensaje">¿Quieres mandarle un mensaje al creador? Aquí está el TikTok</p>
+                <a href="https://www.tiktok.com" target="_blank" class="btn-tiktok">Ir a TikTok 🎵</a>
+                <p class="contacto-nota-fb">(perdón, no hay Facebook)</p>
+            </div>
+
         </section>
     </main>
 
@@ -141,7 +202,7 @@
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // ARRAY ACTUALIZADO CON LA NUEVA LECCIÓN 4
+        // ARRAY CON LAS LECCIONES INCLUYENDO LA LECCIÓN 4
         const LECCIONES = [
             { numero: 1, titulo: 'Lección 1', subtitulo: 'Conoce el Japonés', href: 'leccion1.html' },
             { numero: 2, titulo: 'Lección 2', subtitulo: 'Aprende sobre las primeras hiraganas', href: 'leccion2.html' },
@@ -234,17 +295,14 @@
             generarContenidoRepaso(progreso);
         }
 
-        // DIARIO DE REPASO ACTUALIZADO CON LA INFORMACIÓN DE LA LECCIÓN 3
         function generarContenidoRepaso(progreso) {
             const contenedor = document.getElementById('contenedor-repaso');
             let htmlRepaso = '';
 
-            // Si el progreso es 1, significa que no ha completado nada aún
             if (progreso <= 1) {
                 htmlRepaso = '<p style="text-align:center; color:#b2bec3; font-size:0.85rem; margin:0;">¡Aún estás comenzando tu viaje! Completa tu primera lección para desbloquear tus apuntes. 💪</p>';
             }
 
-            // Si ya pasó la Lección 1 (Progreso >= 2), desbloquea el apunte de la L1
             if (progreso >= 2) {
                 htmlRepaso += `
                     <div class="tarjeta-memoria">
@@ -254,7 +312,6 @@
                 `;
             }
 
-            // Si ya pasó la Lección 2 (Progreso >= 3), añade el apunte de la L2
             if (progreso >= 3) {
                 htmlRepaso += `
                     <div class="tarjeta-memoria" style="margin-top: 10px;">
@@ -264,7 +321,6 @@
                 `;
             }
 
-            // NUEVA ACTUALIZACIÓN: Si el progreso es >= 4 (está en la Lección 4), añade el apunte de la L3
             if (progreso >= 4) {
                 htmlRepaso += `
                     <div class="tarjeta-memoria" style="margin-top: 10px;">
@@ -277,7 +333,6 @@
             contenedor.innerHTML = htmlRepaso;
         }
 
-        // LÓGICA DE CLIC EN EL LIBRO PARA DESPLEGAR CON ANIMACIÓN
         const btnLibro = document.getElementById('btn-libro-repaso');
         const contenedorRepaso = document.getElementById('contenedor-repaso');
 
@@ -310,3 +365,4 @@
 
 </body>
 </html>
+
