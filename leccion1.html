@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lección 1: ¿Qué es Japón? - NihongoSpace">
+    <title>Lección 1 - NihongoSpace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="panel.html" class="logo">NihongoSpace 🌸</a>
+            <a href="panel.html" class="salir-leccion">Salir</a>
+        </div>
+    </header>
+
+    <main id="leccion">
+
+        <!-- Pantalla 1: Contenido de la lección -->
+        <section class="contenido leccion-pantalla activa" data-pantalla="0">
+            <p class="panel-eyebrow">Lección 1</p>
+            <h1>¿Qué es Japón? (日本とは何か)</h1>
+            <p class="texto-intro">Japón es un país insular de Asia Oriental. Es famoso por mezclar tradiciones antiguas con tecnología avanzada. En esta lección aprenderás cómo se llama el país en su propio idioma y sus características principales.</p>
+
+            <div class="tarjeta">
+                <h3>1. El nombre del país</h3>
+                <p>En japonés, "Japón" no se pronuncia igual que en español. Ellos usan dos nombres oficiales:</p>
+                <ul class="lista-lección">
+                    <li><strong>日本 (にほん - Nihon):</strong> El nombre más común en el día a día.</li>
+                    <li><strong>日本 (にっぽん - Nippon):</strong> Se usa en contextos oficiales, dinero y eventos deportivos.</li>
+                </ul>
+                <p>Ambos significan lo mismo: "El origen del sol". Por eso se le conoce mundialmente como "El país del sol naciente".</p>
+            </div>
+
+            <button type="button" class="btn-primario btn-siguiente-pantalla" data-siguiente="1">Continuar</button>
+        </section>
+
+        <!-- Pantalla 2: Pregunta 1 -->
+        <section class="contenido leccion-pantalla" data-pantalla="1">
+            <p class="panel-eyebrow">Pregunta 1 de 3</p>
+            <h2 class="pregunta-titulo">¿Cuál es el nombre en japonés de Japón?</h2>
+            <div class="opciones-quiz" data-pregunta="0">
+                <button type="button" class="opcion-quiz" data-correcta="true">Nihon / Nippon</button>
+                <button type="button" class="opcion-quiz">Zhōngguó</button>
+                <button type="button" class="opcion-quiz">Hanguk</button>
+            </div>
+            <button type="button" class="btn-primario btn-siguiente-pantalla oculto" data-siguiente="2">Continuar</button>
+        </section>
+
+        <!-- Pantalla 3: Pregunta 2 -->
+        <section class="contenido leccion-pantalla" data-pantalla="2">
+            <p class="panel-eyebrow">Pregunta 2 de 3</p>
+            <h2 class="pregunta-titulo">¿Dónde está ubicado Japón?</h2>
+            <div class="opciones-quiz" data-pregunta="1">
+                <button type="button" class="opcion-quiz" data-correcta="true">En Asia Oriental</button>
+                <button type="button" class="opcion-quiz">En Europa del Este</button>
+                <button type="button" class="opcion-quiz">En América del Sur</button>
+            </div>
+            <button type="button" class="btn-primario btn-siguiente-pantalla oculto" data-siguiente="3">Continuar</button>
+        </section>
+
+        <!-- Pantalla 4: Pregunta 3 -->
+        <section class="contenido leccion-pantalla" data-pantalla="3">
+            <p class="panel-eyebrow">Pregunta 3 de 3</p>
+            <h2 class="pregunta-titulo">¿Cómo se le dice a los que viven en Japón?</h2>
+            <div class="opciones-quiz" data-pregunta="2">
+                <button type="button" class="opcion-quiz" data-correcta="true">Japoneses</button>
+                <button type="button" class="opcion-quiz">Franceses</button>
+                <button type="button" class="opcion-quiz">Brasileños</button>
+            </div>
+            <button type="button" class="btn-primario btn-siguiente-pantalla oculto" data-siguiente="4">Ver resultados</button>
+        </section>
+
+        <!-- Pantalla 5: Resultados -->
+        <section class="contenido leccion-pantalla" data-pantalla="4">
+            <div class="resultado-caja">
+                <p class="resultado-emoji" id="resultado-emoji">🎉</p>
+                <h2 class="resultado-mensaje" id="resultado-mensaje">¡Excelente trabajo!</h2>
+
+                <div class="resultado-stats">
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-xp">0</span>
+                        <span class="etiqueta">XP ganado</span>
+                    </div>
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-buenas">0</span>
+                        <span class="etiqueta">Buenas</span>
+                    </div>
+                    <div class="resultado-stat">
+                        <span class="valor" id="stat-malas">0</span>
+                        <span class="etiqueta">Malas</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-primario" id="boton-siguiente-leccion">Siguiente</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const XP_POR_ACIERTO = 50;
+
+        const pantallas = document.querySelectorAll('.leccion-pantalla');
+        const gruposPreguntas = document.querySelectorAll('.opciones-quiz');
+        const resultados = []; // true = acierto, false = error
+        let usuarioActual = null;
+
+        function mostrarPantalla(indice) {
+            pantallas.forEach(function (pantalla) {
+                const esActual = parseInt(pantalla.dataset.pantalla, 10) === indice;
+                pantalla.classList.toggle('activa', esActual);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Botones "Continuar" / "Ver resultados"
+        document.querySelectorAll('.btn-siguiente-pantalla').forEach(function (boton) {
+            boton.addEventListener('click', async function () {
+                const siguiente = parseInt(boton.dataset.siguiente, 10);
+                if (siguiente === 4) {
+                    await calcularYGuardarResultados();
+                }
+                mostrarPantalla(siguiente);
+            });
+        });
+
+        // Lógica de cada pregunta: seleccionar respuesta
+        gruposPreguntas.forEach(function (grupo) {
+            const numeroPregunta = parseInt(grupo.dataset.pregunta, 10);
+            const opciones = grupo.querySelectorAll('.opcion-quiz');
+            const botonContinuar = grupo.parentElement.querySelector('.btn-siguiente-pantalla');
+
+            opciones.forEach(function (opcion) {
+                opcion.addEventListener('click', function () {
+                    if (grupo.dataset.respondida === 'true') return;
+                    grupo.dataset.respondida = 'true';
+
+                    const esCorrecta = opcion.dataset.correcta === 'true';
+                    resultados[numeroPregunta] = esCorrecta;
+
+                    opciones.forEach(function (o) {
+                        o.disabled = true;
+                        if (o.dataset.correcta === 'true') {
+                            o.classList.add('correcta');
+                        } else if (o === opcion) {
+                            o.classList.add('incorrecta');
+                        }
+                    });
+
+                    botonContinuar.classList.remove('oculto');
+                });
+            });
+        });
+
+        async function calcularYGuardarResultados() {
+            const buenas = resultados.filter(function (r) { return r === true; }).length;
+            const malas = resultados.filter(function (r) { return r === false; }).length;
+            const xpGanado = buenas * XP_POR_ACIERTO;
+
+            document.getElementById('stat-xp').textContent = xpGanado;
+            document.getElementById('stat-buenas').textContent = buenas;
+            document.getElementById('stat-malas').textContent = malas;
+
+            const mensajeEl = document.getElementById('resultado-mensaje');
+            const emojiEl = document.getElementById('resultado-emoji');
+
+            if (buenas === resultados.length) {
+                emojiEl.textContent = '🎉';
+                mensajeEl.textContent = '¡Excelente trabajo!';
+            } else if (buenas >= 2) {
+                emojiEl.textContent = '👏';
+                mensajeEl.textContent = '¡Buen trabajo!';
+            } else {
+                emojiEl.textContent = '💪';
+                mensajeEl.textContent = 'Puedes mejorar';
+            }
+
+            if (!usuarioActual) return;
+
+            const perfilRef = doc(db, 'perfiles', usuarioActual.uid);
+            const perfilSnap = await getDoc(perfilRef);
+            const datosActuales = perfilSnap.exists() ? perfilSnap.data() : {};
+
+            const xpActual = datosActuales.xp || 0;
+            const progresoActual = datosActuales.progreso || 1;
+
+            await setDoc(perfilRef, {
+                xp: xpActual + xpGanado,
+                progreso: Math.max(progresoActual, 2)
+            }, { merge: true });
+        }
+
+        document.getElementById('boton-siguiente-leccion').addEventListener('click', function () {
+            window.location.href = 'panel.html';
+        });
+
+        onAuthStateChanged(auth, function (usuario) {
+            if (!usuario) {
+                window.location.href = 'login.html';
+                return;
+            }
+            usuarioActual = usuario;
+        });
+    </script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tu panel de aprendizaje en NihongoSpace.">
+    <title>Tu Panel - NihongoSpace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Barra superior con ícono y datos del usuario -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">NihongoSpace 🌸</a>
+            <div class="perfil-usuario">
+                <div class="avatar" id="avatar-usuario">?</div>
+                <div class="perfil-info">
+                    <span class="perfil-nombre" id="nombre-usuario">Estudiante</span>
+                    <span class="perfil-nivel" id="nivel-usuario">Sin nivel</span>
+                </div>
+                <div class="xp-widget">
+                    <button type="button" class="perfil-xp" id="boton-xp" aria-expanded="false" aria-controls="xp-popover">
+                        <span class="xp-valor" id="xp-usuario">0</span>
+                        <span class="xp-etiqueta">XP</span>
+                    </button>
+                    <div class="xp-popover" id="xp-popover">
+                        <p class="xp-popover-titulo">Progreso de nivel</p>
+                        <div class="xp-barra-fondo">
+                            <div class="xp-barra-relleno" id="xp-barra-relleno"></div>
+                        </div>
+                        <p class="xp-popover-detalle" id="xp-detalle">0 / 500 XP</p>
+                    </div>
+                </div>
+                <button type="button" class="boton-salir" id="boton-cerrar-sesion" title="Cerrar sesión">⏻</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="panel">
+        <section class="panel-central">
+            <p class="panel-eyebrow">Tu ruta de aprendizaje</p>
+
+            <a href="leccion1.html" class="leccion-nodo" id="leccion-nodo">
+                <span class="leccion-numero" id="leccion-numero">1</span>
+            </a>
+            <h1 class="leccion-titulo" id="leccion-titulo">Lección 1</h1>
+            <p class="leccion-subtitulo" id="leccion-subtitulo">Conoce el Japonés</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Creado con ❤️ por NihongoSpace</p>
+    </footer>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const LECCIONES = [
+            { numero: 1, titulo: 'Lección 1', subtitulo: 'Conoce el Japonés', href: 'leccion1.html' },
+            { numero: 2, titulo: 'Lección 2', subtitulo: 'Aprende sobre las primeras hiraganas', href: 'leccion2.html' }
+        ];
+
+        const NOMBRES_NIVEL = {
+            principiante: 'Principiante',
+            basico: 'Básico',
+            intermedio: 'Intermedio',
+            avanzado: 'Avanzado'
+        };
+
+        const elementoAvatar = document.getElementById('avatar-usuario');
+        const elementoNombre = document.getElementById('nombre-usuario');
+        const elementoNivel = document.getElementById('nivel-usuario');
+        const elementoXP = document.getElementById('xp-usuario');
+
+        const XP_POR_NIVEL = 500;
+        const botonXP = document.getElementById('boton-xp');
+        const popoverXP = document.getElementById('xp-popover');
+        const barraRelleno = document.getElementById('xp-barra-relleno');
+        const detalleXP = document.getElementById('xp-detalle');
+
+        let datosPerfilActual = {};
+
+        function aplicarPerfil(datos) {
+            datosPerfilActual = datos || {};
+            const nombre = (datosPerfilActual.nombre || '').trim();
+
+            if (nombre) {
+                elementoNombre.textContent = nombre;
+                elementoAvatar.textContent = nombre.charAt(0).toUpperCase();
+            }
+
+            if (datosPerfilActual.nivel && NOMBRES_NIVEL[datosPerfilActual.nivel]) {
+                elementoNivel.textContent = NOMBRES_NIVEL[datosPerfilActual.nivel];
+            }
+
+            elementoXP.textContent = datosPerfilActual.xp || 0;
+        }
+
+        function animarBarraXP() {
+            const xpTotal = datosPerfilActual.xp || 0;
+            const xpEnNivel = xpTotal % XP_POR_NIVEL;
+            const porcentaje = Math.min(100, Math.round((xpEnNivel / XP_POR_NIVEL) * 100));
+
+            detalleXP.textContent = xpEnNivel + ' / ' + XP_POR_NIVEL + ' XP';
+
+            barraRelleno.style.width = '0%';
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    barraRelleno.style.width = porcentaje + '%';
+                });
+            });
+        }
+
+        function alternarPopoverXP() {
+            const abierto = popoverXP.classList.toggle('visible');
+            botonXP.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+            if (abierto) {
+                animarBarraXP();
+            }
+        }
+
+        botonXP.addEventListener('click', function (evento) {
+            evento.stopPropagation();
+            alternarPopoverXP();
+        });
+
+        document.addEventListener('click', function (evento) {
+            if (!evento.target.closest('.xp-widget') && popoverXP.classList.contains('visible')) {
+                popoverXP.classList.remove('visible');
+                botonXP.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        function mostrarLeccionActual() {
+            const progreso = datosPerfilActual.progreso || 1;
+            const indice = Math.min(progreso, LECCIONES.length) - 1;
+            const leccion = LECCIONES[indice];
+
+            document.getElementById('leccion-numero').textContent = leccion.numero;
+            document.getElementById('leccion-titulo').textContent = leccion.titulo;
+            document.getElementById('leccion-subtitulo').textContent = leccion.subtitulo;
+            document.getElementById('leccion-nodo').setAttribute('href', leccion.href);
+        }
+
+        document.getElementById('boton-cerrar-sesion').addEventListener('click', async function () {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        });
+
+        onAuthStateChanged(auth, async function (usuario) {
+            if (!usuario) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const perfilSnap = await getDoc(doc(db, 'perfiles', usuario.uid));
+
+            if (!perfilSnap.exists() || !perfilSnap.data().nombre) {
+                window.location.href = 'conoceme.html';
+                return;
+            }
+
+            aplicarPerfil(perfilSnap.data());
+            mostrarLeccionActual();
+        });
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cuéntanos sobre ti para personalizar tu aprendizaje de japonés en NihongoSpace.">
+    <title>Conóceme - NihongoSpace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Barra de navegación superior -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">NihongoSpace 🌸</a>
+            <nav aria-label="Principal">
+                <a href="index.html">Volver al inicio</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="conoceme">
+        <section class="hero hero-secundario">
+            <h1>Cuéntanos sobre ti</h1>
+            <p>Esta información nos ayuda a sugerirte el contenido correcto. Se guarda automáticamente en tu cuenta mientras escribes.</p>
+        </section>
+
+        <section class="contenido">
+            <form id="formulario-perfil" class="formulario" autocomplete="off">
+
+                <div class="campo">
+                    <label for="nombre">¿Cómo te llamas?</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Tu nombre">
+                </div>
+
+                <div class="campo">
+                    <label for="nivel">¿Cuál es tu nivel actual?</label>
+                    <select id="nivel" name="nivel">
+                        <option value="">Selecciona una opción</option>
+                        <option value="principiante">Principiante (no sé nada todavía)</option>
+                        <option value="basico">Básico (conozco hiragana/katakana)</option>
+                        <option value="intermedio">Intermedio (uso algo de gramática)</option>
+                        <option value="avanzado">Avanzado (ya mantengo conversaciones)</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="objetivo">¿Cuál es tu objetivo principal?</label>
+                    <select id="objetivo" name="objetivo">
+                        <option value="">Selecciona una opción</option>
+                        <option value="viajar">Viajar a Japón</option>
+                        <option value="anime">Entender anime/manga sin subtítulos</option>
+                        <option value="trabajo">Uso profesional o académico</option>
+                        <option value="examen">Prepararme para el JLPT</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="tiempo">¿Cuánto tiempo puedes practicar al día?</label>
+                    <select id="tiempo" name="tiempo">
+                        <option value="">Selecciona una opción</option>
+                        <option value="10">10 minutos</option>
+                        <option value="30">30 minutos</option>
+                        <option value="60">1 hora</option>
+                        <option value="mas">Más de 1 hora</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="notas">¿Algo más que quieras contarnos?</label>
+                    <textarea id="notas" name="notas" rows="4" placeholder="Opcional"></textarea>
+                </div>
+
+                <div class="acciones-formulario">
+                    <button type="submit" class="btn-primario">Guardar y continuar</button>
+                    <span id="estado-guardado" class="estado-guardado" role="status" aria-live="polite"></span>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Creado con ❤️ por NihongoSpace</p>
+    </footer>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const formulario = document.getElementById('formulario-perfil');
+        const estado = document.getElementById('estado-guardado');
+        const campos = formulario.querySelectorAll('input, select, textarea');
+        let temporizadorGuardado = null;
+        let usuarioActual = null;
+
+        function mostrarEstado(texto) {
+            estado.textContent = texto;
+            clearTimeout(temporizadorGuardado);
+            temporizadorGuardado = setTimeout(function () {
+                estado.textContent = '';
+            }, 2500);
+        }
+
+        function obtenerPerfilRef() {
+            return doc(db, 'perfiles', usuarioActual.uid);
+        }
+
+        // Cargar datos guardados previamente en Firestore, si existen
+        async function cargarDatos() {
+            const perfilSnap = await getDoc(obtenerPerfilRef());
+            if (!perfilSnap.exists()) return;
+            const datos = perfilSnap.data();
+            campos.forEach(function (campo) {
+                if (datos[campo.name] !== undefined) {
+                    campo.value = datos[campo.name];
+                }
+            });
+            mostrarEstado('Datos anteriores cargados ✓');
+        }
+
+        // Guardar el estado actual del formulario en Firestore
+        async function guardarDatos() {
+            if (!usuarioActual) return;
+            const datos = {};
+            campos.forEach(function (campo) {
+                datos[campo.name] = campo.value;
+            });
+            try {
+                const perfilRef = obtenerPerfilRef();
+                const perfilSnap = await getDoc(perfilRef);
+                if (!perfilSnap.exists()) {
+                    datos.xp = 0;
+                    datos.progreso = 1;
+                }
+                await setDoc(perfilRef, datos, { merge: true });
+                mostrarEstado('Guardado automáticamente ✓');
+            } catch (error) {
+                console.error('No se pudo guardar el perfil:', error);
+                mostrarEstado('No se pudo guardar. Revisa tu conexión.');
+            }
+        }
+
+        // Autoguardado mientras el usuario escribe (con pequeño retraso)
+        let temporizadorEscritura = null;
+        campos.forEach(function (campo) {
+            campo.addEventListener('input', function () {
+                clearTimeout(temporizadorEscritura);
+                temporizadorEscritura = setTimeout(guardarDatos, 600);
+            });
+            campo.addEventListener('change', guardarDatos);
+        });
+
+        // Guardado explícito al enviar el formulario
+        formulario.addEventListener('submit', async function (evento) {
+            evento.preventDefault();
+            await guardarDatos();
+            mostrarEstado('¡Perfil guardado! Redirigiendo...');
+            setTimeout(function () {
+                window.location.href = 'panel.html';
+            }, 700);
+        });
+
+        // Solo se puede llenar este formulario si hay sesión iniciada
+        onAuthStateChanged(auth, function (usuario) {
+            if (!usuario) {
+                window.location.href = 'login.html';
+                return;
+            }
+            usuarioActual = usuario;
+            cargarDatos();
+        });
+    </script>
+
+</body>
+</html>
+
