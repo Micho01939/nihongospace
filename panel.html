@@ -51,7 +51,7 @@
             padding: 0 15px;
         }
         .bloque-repaso-contenido.abierto {
-            max-height: 650px; /* Espacio suficiente para los textos */
+            max-height: 650px;
             opacity: 1;
             padding: 15px;
             margin-top: 15px;
@@ -77,7 +77,7 @@
             line-height: 1.4;
         }
 
-        /* Estilos de la sección de mensaje al creador (TikTok) */
+        /* Sección de mensaje al creador (TikTok) */
         .seccion-contacto {
             margin-top: 25px;
             padding: 20px;
@@ -127,19 +127,48 @@
             margin-bottom: 0;
             font-style: italic;
         }
+
+        /* NUEVOS ESTILOS: Asegurar alineación y el Widget de Racha */
+        .perfil-usuario {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .racha-widget {
+            display: flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .racha-icono {
+            margin-right: 4px;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Barra superior con ícono y datos del usuario -->
+    <!-- Barra superior con ícono, racha y datos del usuario -->
     <header>
         <div class="nav-container">
             <a href="index.html" class="logo">NihongoSpace 🌸</a>
             <div class="perfil-usuario">
+                
+                <!-- NUEVO: Widget de Racha (Fueguito) al lado de XP -->
+                <div class="racha-widget" id="racha-widget" title="Tu racha de días seguidos de estudio">
+                    <span class="racha-icono">🔥</span>
+                    <span class="racha-valor" id="racha-usuario">0</span>
+                </div>
+
                 <div class="avatar" id="avatar-usuario">?</div>
                 <div class="perfil-info">
                     <span class="perfil-nombre" id="nombre-usuario">Estudiante</span>
-                    <span class="perfil-nivel" id="nivel-usuario">Sin nivel</span>
+                    <span class="perfil-nivel" id="nivel-usuario">Nivel 0</span>
                 </div>
                 <div class="xp-widget">
                     <button type="button" class="perfil-xp" id="boton-xp" aria-expanded="false" aria-controls="xp-popover">
@@ -175,7 +204,6 @@
                 <h2 class="repaso-titulo">¿Qué es lo que has aprendido?</h2>
                 <p class="repaso-subtitulo">¿Se te olvidó lo que hiciste? ¡Echa un vistazo!</p>
                 
-                <!-- El contenedor donde se inyectarán los resúmenes -->
                 <div class="bloque-repaso-contenido" id="contenedor-repaso">
                     <!-- JavaScript llenará esto según las lecciones completadas -->
                 </div>
@@ -201,7 +229,6 @@
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // ARRAY CON LAS LECCIONES INCLUYENDO LA LECCIÓN 4
         const LECCIONES = [
             { numero: 1, titulo: 'Lección 1', subtitulo: 'Conoce el Japonés', href: 'leccion1.html' },
             { numero: 2, titulo: 'Lección 2', subtitulo: 'Aprende sobre las primeras hiraganas', href: 'leccion2.html' },
@@ -209,17 +236,12 @@
             { numero: 4, titulo: 'Lección 4', subtitulo: 'Hola señora い', href: 'leccion4.html' }
         ];
 
-        const NOMBRES_NIVEL = {
-            principiante: 'Principiante',
-            basico: 'Básico',
-            intermedio: 'Intermedio',
-            avanzado: 'Avanzado'
-        };
-
         const elementoAvatar = document.getElementById('avatar-usuario');
         const elementoNombre = document.getElementById('nombre-usuario');
         const elementoNivel = document.getElementById('nivel-usuario');
         const elementoXP = document.getElementById('xp-usuario');
+        const elementoRacha = document.getElementById('racha-usuario');
+        const widgetRacha = document.getElementById('racha-widget');
 
         const XP_POR_NIVEL = 500;
         const botonXP = document.getElementById('boton-xp');
@@ -238,16 +260,33 @@
                 elementoAvatar.textContent = nombre.charAt(0).toUpperCase();
             }
 
-            if (datosPerfilActual.nivel && NOMBRES_NIVEL[datosPerfilActual.nivel]) {
-                elementoNivel.textContent = NOMBRES_NIVEL[datosPerfilActual.nivel];
-            }
+            // MODIFICACIÓN: Cálculo matemático sucesivo de Niveles por cada 500 XP
+            const xpTotal = datosPerfilActual.xp || 0;
+            const nivelCalculado = Math.floor(xpTotal / XP_POR_NIVEL);
+            elementoNivel.textContent = "Nivel " + nivelCalculado;
 
-            elementoXP.textContent = datosPerfilActual.xp || 0;
+            elementoXP.textContent = xpTotal;
+
+            // LÓGICA DE LA RACHA: Renderizado dinámico del fueguito
+            const racha = datosPerfilActual.rachaActual || 0;
+            elementoRacha.textContent = racha;
+
+            if (racha === 0) {
+                // Si la racha está en cero, se muestra gris/apagada amigablemente
+                widgetRacha.style.background = "#f1f2f6";
+                widgetRacha.style.border = "1px solid #ced6e0";
+                widgetRacha.style.color = "#747d8c";
+            } else {
+                // Si tiene racha, ¡se enciende el fuego!
+                widgetRacha.style.background = "#fff0f0";
+                widgetRacha.style.border = "1px solid #ffccd5";
+                widgetRacha.style.color = "#d63031";
+            }
         }
 
         function animarBarraXP() {
             const xpTotal = datosPerfilActual.xp || 0;
-            const xpEnNivel = xpTotal % XP_POR_NIVEL;
+            const xpEnNivel = xpTotal % XP_POR_NIVEL; // El residuo de la división nos da la XP del nivel actual
             const porcentaje = Math.min(100, Math.round((xpEnNivel / XP_POR_NIVEL) * 100));
 
             detalleXP.textContent = xpEnNivel + ' / ' + XP_POR_NIVEL + ' XP';
@@ -263,7 +302,7 @@
         function alternarPopoverXP() {
             const abierto = popoverXP.classList.toggle('visible');
             botonXP.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-            if (abierto) {
+            if (open) {
                 animarBarraXP();
             }
         }
@@ -290,7 +329,6 @@
             document.getElementById('leccion-subtitulo').textContent = leccion.subtitulo;
             document.getElementById('leccion-nodo').setAttribute('href', leccion.href);
 
-            // Generar el contenido del libro de repaso de forma dinámica
             generarContenidoRepaso(progreso);
         }
 
@@ -364,3 +402,4 @@
 
 </body>
 </html>
+
