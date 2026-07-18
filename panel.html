@@ -51,7 +51,7 @@
             padding: 0 15px;
         }
         .bloque-repaso-contenido.abierto {
-            max-height: 500px; /* Espacio suficiente para los textos */
+            max-height: 650px; /* Incrementado para dar espacio suficiente a la Lección 3 */
             opacity: 1;
             padding: 15px;
             margin-top: 15px;
@@ -118,7 +118,7 @@
             <h1 class="leccion-titulo" id="leccion-titulo">Lección 1</h1>
             <p class="leccion-subtitulo" id="leccion-subtitulo">Conoce el Japonés</p>
 
-            <!-- NUEVA PARTE: NUEVO ICONO DE LIBRO INTELIGENTE DE REPASO -->
+            <!-- SECCIÓN DEL LIBRO INTELIGENTE DE REPASO -->
             <div class="seccion-repaso">
                 <button type="button" class="btn-libro" id="btn-libro-repaso" aria-label="Abrir bitácora de lo aprendido">📖</button>
                 <h2 class="repaso-titulo">¿Qué es lo que has aprendido?</h2>
@@ -141,10 +141,12 @@
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // ARRAY ACTUALIZADO CON LA NUEVA LECCIÓN 4
         const LECCIONES = [
             { numero: 1, titulo: 'Lección 1', subtitulo: 'Conoce el Japonés', href: 'leccion1.html' },
             { numero: 2, titulo: 'Lección 2', subtitulo: 'Aprende sobre las primeras hiraganas', href: 'leccion2.html' },
-            { numero: 3, titulo: 'Lección 3', subtitulo: 'あ de araña', href: 'leccion3.html' }
+            { numero: 3, titulo: 'Lección 3', subtitulo: 'あ de araña', href: 'leccion3.html' },
+            { numero: 4, titulo: 'Lección 4', subtitulo: 'Hola señora い', href: 'leccion4.html' }
         ];
 
         const NOMBRES_NIVEL = {
@@ -232,7 +234,7 @@
             generarContenidoRepaso(progreso);
         }
 
-        // FUNCIÓN PARA GENERAR EL RESUMEN AUTOMÁTICO SEGÚN LO QUE YA APRENDIÓ
+        // DIARIO DE REPASO ACTUALIZADO CON LA INFORMACIÓN DE LA LECCIÓN 3
         function generarContenidoRepaso(progreso) {
             const contenedor = document.getElementById('contenedor-repaso');
             let htmlRepaso = '';
@@ -258,6 +260,16 @@
                     <div class="tarjeta-memoria" style="margin-top: 10px;">
                         <h4>🎌 Lección 2: ¿Qué es el Hiragana?</h4>
                         <p>Descubriste que el Hiragana es el cimiento del idioma, usado para palabras nativas, partículas gramaticales y Furigana. ¡Y ya dominas la pronunciación y escritura de la vocal <strong>あ (A)</strong>!</p>
+                    </div>
+                `;
+            }
+
+            // NUEVA ACTUALIZACIÓN: Si el progreso es >= 4 (está en la Lección 4), añade el apunte de la L3
+            if (progreso >= 4) {
+                htmlRepaso += `
+                    <div class="tarjeta-memoria" style="margin-top: 10px;">
+                        <h4>🕷️ Lección 3: あ de araña</h4>
+                        <p>Dominaste el uso de la letra <strong>あ</strong> en entornos reales. Repasaste vocabulario esencial (Ai, Abocado, Atsui, Aka, Arigatou) y consolidaste estructuras prácticas de interacción, saludos y expresiones sobre el clima.</p>
                     </div>
                 `;
             }
